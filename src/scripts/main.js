@@ -4,27 +4,27 @@ const spider = document.querySelector('.spider');
 const wall = document.querySelector('.wall');
 
 document.addEventListener('click', (e) => {
-  // координати кліку (з урахуванням прокрутки)
-  const clickX = e.clientX + window.scrollX;
-  const clickY = e.clientY + window.scrollY;
+  // координати кліку (viewport)
+  const clickX = e.clientX;
+  const clickY = e.clientY;
 
   // розміри павука
   const spiderRect = spider.getBoundingClientRect();
   const spiderWidth = spiderRect.width;
   const spiderHeight = spiderRect.height;
 
-  // межі стіни
+  // межі стіни (теж viewport!)
   const wallRect = wall.getBoundingClientRect();
-  const wallLeft = wallRect.left + window.scrollX;
-  const wallTop = wallRect.top + window.scrollY;
-  const wallRight = wallLeft + wallRect.width;
-  const wallBottom = wallTop + wallRect.height;
+  const wallLeft = wallRect.left;
+  const wallTop = wallRect.top;
+  const wallRight = wallRect.right;
+  const wallBottom = wallRect.bottom;
 
   // центр павука під курсор
   let newLeft = clickX - spiderWidth / 2;
   let newTop = clickY - spiderHeight / 2;
 
-  // обмеження по горизонталі
+  // обмеження по X
   if (newLeft < wallLeft) {
     newLeft = wallLeft;
   }
@@ -33,7 +33,7 @@ document.addEventListener('click', (e) => {
     newLeft = wallRight - spiderWidth;
   }
 
-  // обмеження по вертикалі
+  // обмеження по Y
   if (newTop < wallTop) {
     newTop = wallTop;
   }
@@ -42,7 +42,10 @@ document.addEventListener('click', (e) => {
     newTop = wallBottom - spiderHeight;
   }
 
-  // застосування позиції
-  spider.style.left = `${newLeft}px`;
-  spider.style.top = `${newTop}px`;
+  // ❗ переводимо з viewport у координати всередині wall
+  const finalLeft = newLeft - wallLeft;
+  const finalTop = newTop - wallTop;
+
+  spider.style.left = `${finalLeft}px`;
+  spider.style.top = `${finalTop}px`;
 });
