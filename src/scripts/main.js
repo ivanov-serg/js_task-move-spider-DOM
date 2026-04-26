@@ -4,48 +4,37 @@ const spider = document.querySelector('.spider');
 const wall = document.querySelector('.wall');
 
 document.addEventListener('click', (e) => {
-  // координати кліку (viewport)
-  const clickX = e.clientX;
-  const clickY = e.clientY;
+  const wallRect = wall.getBoundingClientRect();
 
-  // розміри павука
+  // координати кліку ВІДНОСНО СТІНИ
+  const clickX = e.clientX - wallRect.left;
+  const clickY = e.clientY - wallRect.top;
+
   const spiderRect = spider.getBoundingClientRect();
   const spiderWidth = spiderRect.width;
   const spiderHeight = spiderRect.height;
-
-  // межі стіни (теж viewport!)
-  const wallRect = wall.getBoundingClientRect();
-  const wallLeft = wallRect.left;
-  const wallTop = wallRect.top;
-  const wallRight = wallRect.right;
-  const wallBottom = wallRect.bottom;
 
   // центр павука під курсор
   let newLeft = clickX - spiderWidth / 2;
   let newTop = clickY - spiderHeight / 2;
 
-  // обмеження по X
-  if (newLeft < wallLeft) {
-    newLeft = wallLeft;
+  // обмеження (вже в координатах СТІНИ)
+  if (newLeft < 0) {
+    newLeft = 0;
   }
 
-  if (newLeft + spiderWidth > wallRight) {
-    newLeft = wallRight - spiderWidth;
+  if (newTop < 0) {
+    newTop = 0;
   }
 
-  // обмеження по Y
-  if (newTop < wallTop) {
-    newTop = wallTop;
+  if (newLeft + spiderWidth > wallRect.width) {
+    newLeft = wallRect.width - spiderWidth;
   }
 
-  if (newTop + spiderHeight > wallBottom) {
-    newTop = wallBottom - spiderHeight;
+  if (newTop + spiderHeight > wallRect.height) {
+    newTop = wallRect.height - spiderHeight;
   }
 
-  // ❗ переводимо з viewport у координати всередині wall
-  const finalLeft = newLeft - wallLeft;
-  const finalTop = newTop - wallTop;
-
-  spider.style.left = `${finalLeft}px`;
-  spider.style.top = `${finalTop}px`;
+  spider.style.left = `${newLeft}px`;
+  spider.style.top = `${newTop}px`;
 });
