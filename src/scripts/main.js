@@ -6,19 +6,19 @@ const wall = document.querySelector('.wall');
 document.addEventListener('click', (e) => {
   const wallRect = wall.getBoundingClientRect();
 
-  // координати кліку ВІДНОСНО СТІНИ
+  // координати кліку відносно СТІНИ
   const clickX = e.clientX - wallRect.left;
   const clickY = e.clientY - wallRect.top;
 
-  const spiderRect = spider.getBoundingClientRect();
-  const spiderWidth = spiderRect.width;
-  const spiderHeight = spiderRect.height;
+  const spiderWidth = spider.offsetWidth;
+  const spiderHeight = spider.offsetHeight;
 
-  // центр павука під курсор
   let newLeft = clickX - spiderWidth / 2;
   let newTop = clickY - spiderHeight / 2;
 
-  // обмеження (вже в координатах СТІНИ)
+  const maxX = wall.clientWidth - spiderWidth;
+  const maxY = wall.clientHeight - spiderHeight;
+
   if (newLeft < 0) {
     newLeft = 0;
   }
@@ -27,12 +27,12 @@ document.addEventListener('click', (e) => {
     newTop = 0;
   }
 
-  if (newLeft + spiderWidth > wallRect.width) {
-    newLeft = wallRect.width - spiderWidth;
+  if (newLeft > maxX) {
+    newLeft = maxX;
   }
 
-  if (newTop + spiderHeight > wallRect.height) {
-    newTop = wallRect.height - spiderHeight;
+  if (newTop > maxY) {
+    newTop = maxY;
   }
 
   spider.style.left = `${newLeft}px`;
